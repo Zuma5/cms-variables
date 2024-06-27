@@ -31,7 +31,7 @@
             width: 20%;
         }
         .input-row input:last-child {
-            width: 50%;
+            width: 70%;
             margin-left: 30px;
         }
         label {
@@ -135,7 +135,7 @@
 </table>
 
 <script>
-function addRow() {
+    function addRow() {
     const formSection = document.getElementById('form-section');
     const inputRow = document.createElement('div');
     inputRow.classList.add('input-row');
@@ -169,9 +169,17 @@ function groupValues() {
     const inputRows = document.querySelectorAll('.input-row');
     inputRows.forEach(row => {
         const amounts = row.querySelector('input[name="amounts"]').value.trim();
-        const values = parseAmounts(amounts);
-        Object.keys(values).forEach(currency => {
-            groupedValues[currency].push(values[currency]);
+        console.log("Введенные значения:", amounts);
+        const values = amounts.split(' / ');
+        console.log("Разбитые значения:", values);
+
+        values.forEach((value, index) => {
+            const currencyKeys = Object.keys(groupedValues);
+            const currency = currencyKeys[index];
+            if (currency) {
+                groupedValues[currency].push(value);
+                console.log(`Добавлено значение для ${currency}: ${value}`);
+            }
         });
     });
 
@@ -182,6 +190,11 @@ function groupValues() {
         columnDiv.classList.add('currency-column');
         const label = document.createElement('label');
         label.textContent = currency;
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `checkbox-${currency}`;
+        checkbox.checked = false; // Default to false, meaning don't preserve commas
+        label.appendChild(checkbox);
         const textarea = document.createElement('textarea');
         textarea.name = currency;
         textarea.value = groupedValues[currency].join('\n');
@@ -193,17 +206,20 @@ function groupValues() {
     console.log("Группировка значений завершена:", groupedValues);
 }
 
+
+
 function clearValues() {
     console.log("Очистка значений");
     const currencyColumns = document.querySelectorAll('.currency-column textarea');
     currencyColumns.forEach(column => {
+        const preserveCommas = document.getElementById(`checkbox-${column.name}`).checked;
         let values = column.value.split('\n').map(value => {
             if (value.startsWith('[') && value.endsWith(']')) {
                 return value;
             }
             let amount = value.replace(/[^\d.,-]/g, ''); // удаляем все, кроме цифр, точек и минусов
-            if (column.name === 'INR' || column.name === 'BDT') {
-                amount = amount.replace(/,/g, ''); // удаляем запятые для INR и BDT
+            if ((column.name === 'INR' || column.name === 'BDT') || !preserveCommas) {
+                amount = amount.replace(/,/g, ''); // удаляем запятые для INR и BDT или если запятые не должны сохраняться
             }
             return amount;
         });
@@ -223,6 +239,7 @@ function generateTable() {
 
     currencyColumns.forEach(column => {
         groupedValues[column.name] = column.value.split('\n');
+        console.log(`Значения для ${column.name}:`, groupedValues[column.name]);
     });
 
     inputRows.forEach((row, index) => {
@@ -238,6 +255,7 @@ function generateTable() {
             currencies.forEach(currency => {
                 const amountCell = document.createElement('td');
                 const value = groupedValues[currency] && groupedValues[currency][index];
+                console.log(`Значение для ${currency} в строке ${index}: ${value}`);
                 if (value && value.startsWith('[') && value.endsWith(']')) {
                     amountCell.textContent = value.slice(1, -1); // Remove brackets
                 } else {
@@ -261,21 +279,6 @@ function formatAmount(amount, currency) {
         default:
             return currencyFormats[currency](parseFloat(amount.replace(',', '.')));
     }
-}
-
-function parseAmounts(amounts) {
-    const values = {};
-    const pairs = amounts.split(' / ');
-    pairs.forEach(pair => {
-        const parts = pair.split(' ').filter(val => val);
-        if (parts.length >= 2) {
-            const currency = parts.pop().toUpperCase();
-            const amount = parts.join(' ').replace(/[^\d.,-]/g, '');
-            values[currency] = amount;
-        }
-    });
-    console.log("Парсинг завершен. Результат:", values);
-    return values;
 }
 
 function downloadCSV() {
@@ -333,6 +336,9 @@ const currencyFormats = {
 function formatINRBDT(value) {
     return parseFloat(value.replace(/,/g, '')).toLocaleString('en-IN', { maximumFractionDigits: 20 });
 }
+
+document.addEventListener('DOMContentLoaded', groupValues);
+
 </script>
 
 </body>
