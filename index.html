@@ -29,6 +29,7 @@
         }
         .input-row input:first-child {
             width: 20%;
+            text-transform: uppercase;
         }
         .input-row input:last-child {
             width: 70%;
@@ -67,6 +68,10 @@
         table, th, td {
             border: 1px solid #ccc;
         }
+        table tr>td:first-child {
+            text-transform: uppercase;
+        }
+
         th, td {
             padding: 8px;
             text-align: left;
@@ -332,7 +337,6 @@ function downloadCSV() {
     document.body.removeChild(link);
     console.log("CSV скачан успешно");
 }
-
 
 
 const currencyFormats = {
