@@ -292,12 +292,12 @@ function downloadCSV() {
     const tableRows = Array.from(document.getElementById('prizes-table').getElementsByTagName('tbody')[0].rows);
     tableRows.forEach(row => {
         const cells = Array.from(row.cells);
-        let rowContent = cells.map(cell => {
+        let rowContent = cells.map((cell, cellIndex) => {
             let cellText = cell.textContent.trim();
             let needsQuotes = false;
 
             // Condition 1: Any value in the "Name" column should not be in quotes
-            if (cell.cellIndex === 0) {
+            if (cellIndex === 0) {
                 needsQuotes = false;
             } else {
                 // Condition 2: Check if the value contains a comma
@@ -313,6 +313,7 @@ function downloadCSV() {
             }
 
             if (needsQuotes) {
+                cellText = cellText.replace(/"/g, '""'); // Escape double quotes by doubling them
                 cellText = `"${cellText}"`;
             }
 
