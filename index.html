@@ -325,7 +325,7 @@ function downloadCSV() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "tournament_prizes.csv");
+    link.setAttribute("download", "cms_variables.csv");
     document.body.appendChild(link); // Required for FF
     link.click();
     document.body.removeChild(link);
