@@ -303,6 +303,7 @@ function downloadCSV() {
 
             // Condition 1: Any value in the "Name" column should not be in quotes
             if (cellIndex === 0) {
+                cellText = cellText.toUpperCase(); // Convert variable names to uppercase
                 needsQuotes = false;
             } else {
                 // Condition 2: Check if the value contains a comma
@@ -337,6 +338,7 @@ function downloadCSV() {
     document.body.removeChild(link);
     console.log("CSV скачан успешно");
 }
+
 
 
 const currencyFormats = {
