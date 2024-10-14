@@ -120,14 +120,10 @@
             <th>Name</th>
             <th>EUR</th>
             <th>USD</th>
-            <th>RUB</th>
-            <th>TRY</th>
             <th>KZT</th>
-            <th>BRL</th>
             <th>AZN</th>
             <th>UZS</th>
             <th>INR</th>
-            <th>PEN</th>
             <th>CLP</th>
             <th>MXN</th>
             <th>CAD</th>
@@ -157,14 +153,10 @@ function groupValues() {
     const groupedValues = {
         EUR: [],
         USD: [],
-        RUB: [],
-        TRY: [],
         KZT: [],
-        BRL: [],
         AZN: [],
         UZS: [],
         INR: [],
-        PEN: [],
         CLP: [],
         MXN: [],
         CAD: [],
@@ -256,7 +248,7 @@ function generateTable() {
             variableCell.textContent = variableName;
             tr.appendChild(variableCell);
 
-            const currencies = ["EUR", "USD", "RUB", "TRY", "KZT", "BRL", "AZN", "UZS", "INR", "PEN", "CLP", "MXN", "CAD", "BDT"];
+            const currencies = ["EUR", "USD", "KZT", "AZN", "UZS", "INR", "CLP", "MXN", "CAD", "BDT"];
             currencies.forEach(currency => {
                 const amountCell = document.createElement('td');
                 const value = groupedValues[currency] && groupedValues[currency][index];
@@ -288,7 +280,7 @@ function formatAmount(amount, currency) {
 
 function downloadCSV() {
     console.log("Скачивание CSV");
-    const allCurrencies = ["EUR", "USD", "RUB", "TRY", "KZT", "BRL", "AZN", "UZS", "INR", "PEN", "CLP", "MXN", "CAD", "BDT"];
+    const allCurrencies = ["EUR", "USD", "KZT", "AZN", "UZS", "INR", "CLP", "MXN", "CAD", "BDT"];
     const csvHeaders = ["Name"].concat(allCurrencies);
 
     let csvContent = "data:text/csv;charset=utf-8,";
@@ -311,7 +303,7 @@ function downloadCSV() {
                     needsQuotes = true;
                 } else {
                     // Condition 3: Check for specific currency symbols or a numeric value without any symbols
-                    const currencySymbols = ['€', '$', '₺', '₸', 'R$', '₼', "SO'M", 'INR', 'S/', 'BDT'];
+                    const currencySymbols = ['€', '$', '₸', '₼', "SO'M", 'INR', 'BDT'];
                     let hasCurrencySymbol = currencySymbols.some(symbol => cellText.includes(symbol));
                     let isNumericValue = !isNaN(parseFloat(cellText.replace(/,/g, '')));
                     needsQuotes = !(hasCurrencySymbol || isNumericValue);
@@ -344,14 +336,10 @@ function downloadCSV() {
 const currencyFormats = {
     'EUR': (value) => `€ ${value.toLocaleString()}`,
     'USD': (value) => `$ ${value.toLocaleString()}`,
-    'RUB': (value) => `${value.toLocaleString()}`,
-    'TRY': (value) => `₺ ${value.toLocaleString()}`,
     'KZT': (value) => `${value.toLocaleString()} ₸`,
-    'BRL': (value) => `R$ ${value.toLocaleString()}`,
     'AZN': (value) => `${value.toLocaleString()} ₼`,
     'UZS': (value) => `${value.toLocaleString()} SO'M`,
     'INR': (value) => `${formatINRBDT(value)} INR`,
-    'PEN': (value) => `S/ ${value.toLocaleString()}`,
     'CLP': (value) => `$ ${value.toLocaleString()}`,
     'MXN': (value) => `$ ${value.toLocaleString()}`,
     'CAD': (value) => `$ ${value.toLocaleString()}`,
